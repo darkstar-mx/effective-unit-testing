@@ -3,10 +3,13 @@ void test1() {
     helper(true, false, "Standard");
 }</code></pre></div><div><h3>Good example</h3><pre><code>@Test
 void shouldProcessOrder_WhenUserIsActive() {
+    // Arrange
     User user = new User("John", Status.ACTIVE);
     Order order = new Order(100);
 
+    // Act
     Result result = service.process(user, order);
 
+    // Assert
     assertEquals(Result.SUCCESS, result.status());
 }</code></pre></div></div><div class="grid two"><article class="card"><h3>Write for review</h3><p>The name, setup, and assertion should tell the story without extra explanation.</p></article><article class="card"><h3>Prefer DAMP</h3><p>Descriptive duplication is often cheaper than hiding intent behind helpers.</p></article></div></section>

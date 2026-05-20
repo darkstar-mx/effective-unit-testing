@@ -7,10 +7,13 @@ void setUp() {
     // 50 lines more...
 }</code></pre></div><div><h3>Good example</h3><pre><code>@Test
 void updateName_ShouldPersistUser() {
+    // Arrange
     UserRepo repo = mock(UserRepo.class);
     UserService service = new UserService(repo, emailStub(), auditStub());
 
+    // Act
     service.updateName(1L, "New Name");
 
+    // Assert
     verify(repo).save(any());
 }</code></pre></div></div><p class="rule">Keep setup local unless multiple tests truly share the same meaning, not just the same mechanics.</p></section>

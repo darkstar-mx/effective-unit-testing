@@ -6,12 +6,16 @@ void getDiscount_ShouldApplyOnWeekends() {
     }
 }</code></pre></div><div><h3>Good example</h3><pre><code>@Test
 void calculatePrice_ShouldApplyWeekendDiscount() {
+    // Arrange
     Clock clock = Clock.fixed(
         SATURDAY_INSTANT,
         ZoneId.systemDefault()
     );
-
     PricingService service = new PricingService(clock);
 
-    assertEquals(80.0, service.calculate(100));
+    // Act
+    double actual = service.calculate(100);
+
+    // Assert
+    assertEquals(80.0, actual);
 }</code></pre></div></div><p class="rule">If time, randomness, threads, files, or network affect the result, create a seam and control it.</p></section>

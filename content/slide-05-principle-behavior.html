@@ -3,9 +3,12 @@ void updateInternalState_ShouldCallPrivateMethod() {
     // implementation-coupled test
 }</code></pre></div><div><h3>Good example</h3><pre><code>@Test
 void deposit_ShouldIncreaseBalance_WhenAmountIsPositive() {
+    // Arrange
     Account account = new Account(100);
 
+    // Act
     account.deposit(50);
 
+    // Assert
     assertEquals(new Account(150), account);
 }</code></pre></div></div><p class="rule">A test should survive refactoring if the user-visible behavior is unchanged.</p></section>

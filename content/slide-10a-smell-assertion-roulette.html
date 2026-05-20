@@ -1,5 +1,5 @@
 <section class="slide"><h2>Smell 4 <span>Assertion Roulette</span></h2><div class="code-grid"><div><h3>Bad example</h3><pre><code>@Test
-void createInvoice_ShouldPopulateFields() {
+void createInvoice_ShouldPopulateFields_AndNotifyCustomer() {
     Invoice invoice = service.createInvoice(order);
 
     assertEquals("INV-001", invoice.id());
@@ -7,15 +7,22 @@ void createInvoice_ShouldPopulateFields() {
     assertEquals(customerId, invoice.customerId());
     assertEquals(3, invoice.lines().size());
     assertEquals(total, invoice.total());
+
+    verify(emailGateway).sendInvoice(order.customerEmail(), invoice);
 }</code></pre></div><div><h3>Good example</h3><pre><code>@Test
 void createInvoice_ShouldReturnCreatedInvoiceForOrder() {
-    Invoice invoice = service.createInvoice(order);
+    // Arrange
+    Invoice expected = new Invoice("INV-001", CREATED, customerId, 3, total);
 
-    assertAll("invoice",
-        () -> assertEquals("INV-001", invoice.id(), "invoice id"),
-        () -> assertEquals(CREATED, invoice.status(), "invoice status"),
-        () -> assertEquals(customerId, invoice.customerId(), "customer"),
-        () -> assertEquals(3, invoice.lines().size(), "line count"),
-        () -> assertEquals(total, invoice.total(), "invoice total")
+    // Act
+    Invoice actual = service.createInvoice(order);
+
+    // Assert
+    assertAll("created invoice",
+        () -> assertEquals(expected.id(), actual.id(), "invoice id"),
+        () -> assertEquals(expected.status(), actual.status(), "invoice status"),
+        () -> assertEquals(expected.customerId(), actual.customerId(), "customer"),
+        () -> assertEquals(expected.lines().size(), actual.lines().size(), "line count"),
+        () -> assertEquals(expected.total(), actual.total(), "invoice total")
     );
-}</code></pre></div></div><div class="grid two"><article class="card danger"><h3>Problem</h3><p>When one assertion fails, the test output often hides the rest of the intent.</p></article><article class="card success"><h3>Fix</h3><p>Group related checks, add messages, or compare richer expected objects when the domain allows it.</p></article></div></section>
+}</code></pre></div></div><div class="grid two"><article class="card danger"><h3>Cause 1: Eager Test</h3><p>If the assertions answer different business questions, the test is doing too much and should be split into separate tests.</p></article><article class="card danger"><h3>Cause 2: Missing Assertion Message</h3><p>If several checks support one behavior, unnamed assertions force the reader to reverse-engineer what broke.</p></article></div><div class="grid two"><article class="card success"><h3>Fix 1</h3><p>Split invoice creation and customer notification into separate tests because they are different behaviors.</p></article><article class="card success"><h3>Fix 2</h3><p>When multiple checks support one behavior, use assertion messages or compare a richer expected object.</p></article></div><p class="rule">Review rule: split the test when assertions prove different behaviors; restructure the assertions when they prove one behavior poorly.</p></section>

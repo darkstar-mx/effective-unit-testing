@@ -5,7 +5,12 @@ void findOrder_ShouldReturnOrder() {
     assertNotNull(result);
 }</code></pre></div><div><h3>Good example</h3><pre><code>@Test
 void findOrder_ShouldReturnPendingOrderForKnownId() {
+    // Arrange
+    Order expected = new Order(123L, PENDING, 500);
+
+    // Act
     Order actual = service.findOrder(123L);
 
-    assertEquals(new Order(123L, PENDING, 500), actual);
+    // Assert
+    assertEquals(expected, actual);
 }</code></pre></div></div><div class="grid two"><article class="card danger"><h3>Low value</h3><p>Statement coverage increases, but diagnostic power stays near zero.</p></article><article class="card success"><h3>High value</h3><p>Assertions should prove the rule and make failures actionable.</p></article></div></section>

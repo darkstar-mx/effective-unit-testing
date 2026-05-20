@@ -7,10 +7,13 @@ void generateReport_ShouldSucceed() {
     service.generateReport(order);
 }</code></pre></div><div><h3>Good example</h3><pre><code>@Test
 void generateReport_ShouldUseProvidedExchangeRates() {
+    // Arrange
     ExchangeRateProvider rates = () -> fixedRates;
     ReportService service = new ReportService(rates);
 
+    // Act
     Report report = service.generateReport(order);
 
+    // Assert
     assertEquals(EXPECTED_TOTAL, report.total());
 }</code></pre></div></div><div class="grid two"><article class="card danger"><h3>Why it is risky</h3><p>Partial mocking usually means the object has mixed responsibilities and no clean seam.</p></article><article class="card"><h3>When acceptable</h3><p>Use it sparingly for legacy code under change, and treat it as a refactoring target rather than an end state.</p></article></div><p class="rule">Prefer extracting collaborators over overriding part of the object under test.</p></section>

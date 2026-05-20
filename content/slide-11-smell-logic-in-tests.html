@@ -8,5 +8,12 @@ void calculateTax_ShouldBeCorrectForAllRegions() {
 }</code></pre></div><div><h3>Good example</h3><pre><code>@ParameterizedTest
 @ValueSource(strings = {"NY", "CA", "TX"})
 void calculateTax_ShouldReturnPositiveValue(String region) {
-    assertTrue(service.calculate(100, region) &gt; 0);
+    // Arrange
+    double subtotal = 100;
+
+    // Act
+    double actual = service.calculate(subtotal, region);
+
+    // Assert
+    assertTrue(actual &gt; 0);
 }</code></pre></div></div><p class="rule">Tests should be easy to read linearly. If a test needs its own logic, the intent is being buried.</p></section>
