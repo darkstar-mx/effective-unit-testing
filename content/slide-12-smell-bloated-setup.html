@@ -1,0 +1,16 @@
+<section class="slide"><h2>Smell 5 <span>Bloated or Global Setup</span></h2><div class="code-grid"><pre><code>@BeforeEach
+void setUp() {
+    repo = mock(Repo.class);
+    email = mock(Email.class);
+    audit = mock(Audit.class);
+    service = new Service(repo, email, audit);
+    // 50 lines more...
+}</code></pre><pre><code>@Test
+void updateName_ShouldPersistUser() {
+    UserRepo repo = mock(UserRepo.class);
+    UserService service = new UserService(repo, emailStub(), auditStub());
+
+    service.updateName(1L, "New Name");
+
+    verify(repo).save(any());
+}</code></pre></div><p class="rule">Keep setup local unless multiple tests truly share the same meaning, not just the same mechanics.</p></section>

@@ -1,0 +1,11 @@
+<section class="slide"><h2>Smell 3 <span>Weak Assertions and Vanity Coverage</span></h2><div class="code-grid"><pre><code>@Test
+void findOrder_ShouldReturnOrder() {
+    Order result = service.findOrder(123L);
+
+    assertNotNull(result);
+}</code></pre><pre><code>@Test
+void findOrder_ShouldReturnPendingOrderForKnownId() {
+    Order actual = service.findOrder(123L);
+
+    assertEquals(new Order(123L, PENDING, 500), actual);
+}</code></pre></div><div class="grid two"><article class="card danger"><h3>Low value</h3><p>Statement coverage increases, but diagnostic power stays near zero.</p></article><article class="card success"><h3>High value</h3><p>Assertions should prove the rule and make failures actionable.</p></article></div></section>

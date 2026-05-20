@@ -1,8 +1,0 @@
-<section class="slide"><h2>Mocks vs Stubs</h2><div class="grid two"><article class="card"><h3>Stub</h3><p>Provides data to the system under test.</p></article><article class="card"><h3>Mock</h3><p>Verifies behavior or interaction.</p></article></div><pre><code>// Stub
-User stubUser = mock(User.class);
-when(stubUser.id()).thenReturn(1L);
-
-// Mock
-EmailService mockEmail = mock(EmailService.class);
-service.notify(stubUser);
-verify(mockEmail).send(any());</code></pre><p class="rule">Stubs provide data; mocks verify behavior.</p></section>

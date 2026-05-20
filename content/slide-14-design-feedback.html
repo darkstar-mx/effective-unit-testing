@@ -1,0 +1,20 @@
+<section class="slide"><h2>Hard to Test Often Means Hard to Design</h2><div class="code-grid"><pre><code>class OrderService {
+    double calculateTotal(Order order) {
+        double base = order.getItems()
+            .stream()
+            .mapToDouble(Item::price)
+            .sum();
+
+        return base * 1.16;
+    }
+}</code></pre><pre><code>class OrderService {
+    private final TaxPolicy taxPolicy;
+
+    OrderService(TaxPolicy taxPolicy) {
+        this.taxPolicy = taxPolicy;
+    }
+
+    double calculateTotal(Order order) {
+        return taxPolicy.apply(order.subtotal());
+    }
+}</code></pre></div><p class="notes">Good unit testing is not only verification. It is a design feedback loop that pushes dependencies, policy, and side effects to clear seams.</p></section>

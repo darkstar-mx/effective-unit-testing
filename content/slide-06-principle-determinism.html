@@ -1,4 +1,4 @@
-<section class="slide"><h2>Determinism and Seams</h2><div class="code-grid"><pre><code>@Test
+<section class="slide"><h2>Principle 2 <span>Deterministic, Isolated, Fast</span></h2><div class="code-grid"><pre><code>@Test
 void getDiscount_ShouldApplyOnWeekends() {
     if (LocalDateTime.now().getDayOfWeek()
         == DayOfWeek.SATURDAY) {
@@ -6,12 +6,12 @@ void getDiscount_ShouldApplyOnWeekends() {
     }
 }</code></pre><pre><code>@Test
 void calculatePrice_ShouldApplyWeekendDiscount() {
-    Clock fixedClock = Clock.fixed(
+    Clock clock = Clock.fixed(
         SATURDAY_INSTANT,
         ZoneId.systemDefault()
     );
 
-    var service = new PricingService(fixedClock);
+    PricingService service = new PricingService(clock);
 
     assertEquals(80.0, service.calculate(100));
-}</code></pre></div><p class="rule">Wrap non-deterministic behavior behind injectable seams.</p></section>
+}</code></pre></div><p class="rule">If time, randomness, threads, files, or network affect the result, create a seam and control it.</p></section>

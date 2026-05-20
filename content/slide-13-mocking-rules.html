@@ -1,0 +1,6 @@
+<section class="slide"><h2>Mocking Rules <span>Use Interaction Testing Deliberately</span></h2><div class="grid two"><article class="card"><h3>Good candidates</h3><ul><li>HTTP clients</li><li>Message brokers</li><li>Databases and gateways</li><li>Clock, UUID, randomness</li></ul></article><article class="card danger"><h3>Bad candidates</h3><ul><li>Value objects</li><li>Entities with simple state</li><li>Collections</li><li>Your own domain rules</li></ul></article></div><pre><code>@Test
+void submit_ShouldSendExpectedPayloadToGateway() {
+    service.submit(order);
+
+    verify(gateway).send(expectedRequest(order));
+}</code></pre><p class="rule">Interaction assertions are correct when the interaction itself is the contract.</p></section>

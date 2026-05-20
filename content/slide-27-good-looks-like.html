@@ -1,8 +1,0 @@
-<section class="slide"><h2>What “Good” Looks Like</h2><div class="metrics"><div><span>01</span><strong>Fast CI</strong><p>Unit tests run quickly.</p></div><div><span>02</span><strong>Stable Tests</strong><p>Only behavior changes break tests.</p></div><div><span>03</span><strong>Clear Failures</strong><p>Failures guide debugging.</p></div><div><span>04</span><strong>Safe Refactoring</strong><p>Change becomes routine.</p></div></div><pre><code>@Test
-void transfer_ShouldReject_WhenBalanceIsInsufficient() {
-    var account = new Account(100);
-
-    var result = service.transfer(account, 200);
-
-    assertEquals(Result.REJECTED, result.status());
-}</code></pre></section>
