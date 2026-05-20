@@ -14,10 +14,12 @@
   "content/slide-10a-smell-assertion-roulette.html",
   "content/slide-11-smell-logic-in-tests.html",
   "content/slide-12-smell-bloated-setup.html",
+  "content/slide-12a-fixture-strategy.html",
   "content/slide-13-mocking-rules.html",
   "content/slide-13a-partial-mocking.html",
   "content/slide-14-design-feedback.html",
   "content/slide-15-code-review-checklist.html",
   "content/slide-16-definition-of-done.html",
-  "content/slide-17-final-message.html"
+  "content/slide-17-final-message.html",
+  "content/slide-18-further-reading.html"
 ]

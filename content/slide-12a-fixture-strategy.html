@@ -1,0 +1,21 @@
+<section class="slide"><h2>Fixture Strategy <span>Keep Test Data Explicit and Cheap</span></h2><div class="code-grid"><div><h3>Bad example</h3><pre><code>@Test
+void updateEmail_ShouldPersistChange() {
+    User user = TestDataFactory.createDefaultEnterpriseUser();
+
+    service.updateEmail(user, "new@email.com");
+
+    assertEquals("new@email.com", user.getEmail());
+}</code></pre></div><div><h3>Good example</h3><pre><code>@Test
+void updateEmail_ShouldPersistChange() {
+    // Arrange
+    User user = aUser()
+        .withId(1L)
+        .withEmail("old@email.com")
+        .build();
+
+    // Act
+    service.updateEmail(user, "new@email.com");
+
+    // Assert
+    assertEquals("new@email.com", user.getEmail());
+}</code></pre></div></div><div class="grid two"><article class="card"><h3>Use inline setup when</h3><ul><li>The object is small.</li><li>The fields matter to the scenario.</li><li>Duplication is still readable.</li></ul></article><article class="card"><h3>Use a builder/factory when</h3><ul><li>The object has many fields.</li><li>You need safe defaults.</li><li>The test should highlight only the relevant differences.</li></ul></article></div><div class="grid two"><article class="card danger"><h3>Avoid</h3><ul><li>Mystery helpers with hidden defaults.</li><li>Shared mutable fixtures.</li><li>Factories that encode business meaning unclearly.</li></ul></article><article class="card success"><h3>Review rule</h3><p>The fixture should reveal why this scenario is special without making the reader inspect helper internals first.</p></article></div></section>
