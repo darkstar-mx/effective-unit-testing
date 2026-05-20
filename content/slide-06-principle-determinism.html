@@ -1,10 +1,10 @@
-<section class="slide"><h2>Principle 2 <span>Deterministic, Isolated, Fast</span></h2><div class="code-grid"><pre><code>@Test
+<section class="slide"><h2>Principle 2 <span>Deterministic, Isolated, Fast</span></h2><div class="code-grid"><div><h3>Bad example</h3><pre><code>@Test
 void getDiscount_ShouldApplyOnWeekends() {
     if (LocalDateTime.now().getDayOfWeek()
         == DayOfWeek.SATURDAY) {
         assertEquals(80.0, service.calculate(100));
     }
-}</code></pre><pre><code>@Test
+}</code></pre></div><div><h3>Good example</h3><pre><code>@Test
 void calculatePrice_ShouldApplyWeekendDiscount() {
     Clock clock = Clock.fixed(
         SATURDAY_INSTANT,
@@ -14,4 +14,4 @@ void calculatePrice_ShouldApplyWeekendDiscount() {
     PricingService service = new PricingService(clock);
 
     assertEquals(80.0, service.calculate(100));
-}</code></pre></div><p class="rule">If time, randomness, threads, files, or network affect the result, create a seam and control it.</p></section>
+}</code></pre></div></div><p class="rule">If time, randomness, threads, files, or network affect the result, create a seam and control it.</p></section>

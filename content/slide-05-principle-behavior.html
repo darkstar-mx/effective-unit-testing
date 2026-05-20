@@ -1,11 +1,11 @@
-<section class="slide"><h2>Principle 1 <span>Behavior Over Implementation</span></h2><div class="code-grid"><pre><code>@Test
+<section class="slide"><h2>Principle 1 <span>Behavior Over Implementation</span></h2><div class="code-grid"><div><h3>Bad example</h3><pre><code>@Test
 void updateInternalState_ShouldCallPrivateMethod() {
     // implementation-coupled test
-}</code></pre><pre><code>@Test
+}</code></pre></div><div><h3>Good example</h3><pre><code>@Test
 void deposit_ShouldIncreaseBalance_WhenAmountIsPositive() {
     Account account = new Account(100);
 
     account.deposit(50);
 
     assertEquals(new Account(150), account);
-}</code></pre></div><p class="rule">A test should survive refactoring if the user-visible behavior is unchanged.</p></section>
+}</code></pre></div></div><p class="rule">A test should survive refactoring if the user-visible behavior is unchanged.</p></section>

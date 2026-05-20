@@ -1,4 +1,4 @@
-<section class="slide"><h2>What a Unit Test Protects</h2><div class="code-grid"><pre><code>class OrderService {
+<section class="slide"><h2>What a Unit Test Protects</h2><div class="code-grid"><div><h3>Production design</h3><pre><code>class OrderService {
     private final TaxPolicy taxPolicy;
 
     OrderService(TaxPolicy taxPolicy) {
@@ -8,7 +8,7 @@
     Money checkout(Order order) {
         return taxPolicy.apply(order.subtotal());
     }
-}</code></pre><pre><code>@Test
+}</code></pre></div><div><h3>Good example</h3><pre><code>@Test
 void checkout_ShouldApplyTaxPolicy() {
     TaxPolicy taxPolicy = subtotal -> subtotal.multiply(1.16);
     OrderService service = new OrderService(taxPolicy);
@@ -16,4 +16,4 @@ void checkout_ShouldApplyTaxPolicy() {
     Money total = service.checkout(orderWithSubtotal(100));
 
     assertEquals(money(116), total);
-}</code></pre></div><div class="grid two"><article class="card"><h3>Protect this</h3><p>Business behavior, rules, invariants, and contracts.</p></article><article class="card danger"><h3>Do not protect this</h3><p>Private flow, temporary structure, or harmless internal refactors.</p></article></div></section>
+}</code></pre></div></div><div class="grid two"><article class="card"><h3>Protect this</h3><p>Business behavior, rules, invariants, and contracts.</p></article><article class="card danger"><h3>Do not protect this</h3><p>Private flow, temporary structure, or harmless internal refactors.</p></article></div></section>

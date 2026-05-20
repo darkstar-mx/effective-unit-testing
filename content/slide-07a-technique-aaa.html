@@ -1,0 +1,20 @@
+<section class="slide"><h2>Technique <span>AAA Makes Intent Obvious</span></h2><div class="code-grid"><div><h3>Bad example</h3><pre><code>@Test
+void testProcess() {
+    Service service = new Service();
+    service.init();
+    assertTrue(service.isValid());
+
+    Response result = service.process(new Request(10));
+    assertEquals(20, result.val());
+}</code></pre></div><div><h3>Good example</h3><pre><code>@Test
+void process_ShouldDoubleValue_WhenInputIsPositive() {
+    // Arrange
+    Service service = new Service();
+    Request request = new Request(10);
+
+    // Act
+    Response actual = service.process(request);
+
+    // Assert
+    assertEquals(new Response(20), actual);
+}</code></pre></div></div><div class="grid two"><article class="card"><h3>Why it matters</h3><p>AAA reduces hidden setup, mixed concerns, and review friction.</p></article><article class="card"><h3>Review rule</h3><p>If Arrange, Act, and Assert are blurred together, ask for a rewrite.</p></article></div></section>

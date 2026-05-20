@@ -1,14 +1,14 @@
-<section class="slide"><h2>Smell 2 <span>Over-Mocking</span></h2><div class="code-grid"><pre><code>@Test
+<section class="slide"><h2>Smell 2 <span>Over-Mocking</span></h2><div class="code-grid"><div><h3>Bad example</h3><pre><code>@Test
 void processOrder_ShouldSucceed() {
     User mockUser = mock(User.class);
     when(mockUser.isActive()).thenReturn(true);
 
     orderService.process(mockUser, order);
-}</code></pre><pre><code>@Test
+}</code></pre></div><div><h3>Good example</h3><pre><code>@Test
 void processOrder_ShouldSucceed_ForActiveUser() {
     User user = new User(1L, "John", Status.ACTIVE);
 
     OrderResult result = orderService.process(user, order);
 
     assertEquals(SUCCESS, result.status());
-}</code></pre></div><div class="grid two"><article class="card"><h3>Mock only boundaries</h3><p>Use mocks for expensive, slow, external, or non-deterministic collaborators.</p></article><article class="card danger"><h3>Do not mock domain truth</h3><p>If the object is simple and in-memory, prefer a real instance.</p></article></div></section>
+}</code></pre></div></div><div class="grid two"><article class="card"><h3>Mock only boundaries</h3><p>Use mocks for expensive, slow, external, or non-deterministic collaborators.</p></article><article class="card danger"><h3>Do not mock domain truth</h3><p>If the object is simple and in-memory, prefer a real instance.</p></article></div></section>

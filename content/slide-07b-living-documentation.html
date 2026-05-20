@@ -1,0 +1,16 @@
+<section class="slide"><h2>Tests as Living Documentation</h2><div class="code-grid"><div><h3>Bad example</h3><pre><code>@Test
+void testWithdraw() {
+}
+
+@Test
+void testFee() {
+}</code></pre></div><div><h3>Good example</h3><pre><code>class TransferServiceTest {
+
+    @Test
+    void shouldRejectTransfer_WhenBalanceIsInsufficient() {
+    }
+
+    @Test
+    void shouldApplyFee_WhenTransferIsInternational() {
+    }
+}</code></pre></div></div><p class="rule">A well-named test suite should explain business behavior to a reviewer without opening the production code first.</p></section>
