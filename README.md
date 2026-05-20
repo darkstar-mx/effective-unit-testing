@@ -36,10 +36,10 @@ It covers:
 
 ## Project Structure
 
-- [index.html](/abs/path/D:/development/effective-unit-testing-web/index.html:1): presentation shell
-- [script.js](/abs/path/D:/development/effective-unit-testing-web/script.js:1): slide loader and deck navigation
-- [styles.css](/abs/path/D:/development/effective-unit-testing-web/styles.css:1): presentation styling
-- [content](/abs/path/D:/development/effective-unit-testing-web/content): slide content files and manifest
+- [index.html](index.html): presentation shell
+- [script.js](script.js): slide loader and deck navigation
+- [styles.css](styles.css): presentation styling
+- [content](content): slide content files and manifest
 
 ## Running Locally
 
