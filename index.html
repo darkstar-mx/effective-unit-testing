@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Effective Unit Testing in Java</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <canvas id="tech-bg"></canvas>
+  <header class="topbar">
+    <div class="brand"><span class="brand-dot"></span><span>Effective Unit Testing in Java</span></div>
+    <nav><button id="prevBtn">← Prev</button><span id="counter"></span><button id="nextBtn">Next →</button></nav>
+  </header>
+  <main class="deck" id="deck">
+    <section class="slide title-slide active">
+      <div class="hero"><p class="eyebrow">Tech Talk</p><h1>Effective Unit Testing in Java</h1><p class="subtitle">Making tests an asset, not a liability</p><div class="chips"><span>Java 21</span><span>JUnit 5</span><span>Mockito</span><span>Maintainability</span></div></div>
+    </section>
+
+    <section class="slide"><h2>Why Unit Tests Exist <span>And Why They Fail</span></h2><div class="grid two"><article class="card danger"><h3>Problem</h3><ul><li>Teams believe tests are about “coverage” or “correctness”.</li><li>Tests become a burden instead of a tool.</li><li>Engineers start avoiding or deleting tests.</li></ul></article><article class="card"><h3>Rule of Thumb</h3><p>If your code is hard to test, your design is the problem.</p></article></div><div class="code-grid"><pre><code>class OrderService {
+    double calculateTotal(Order order) {
+        double base = order.getItems()
+            .stream()
+            .mapToDouble(Item::price)
+            .sum();
+
+        return base * 1.16;
+    }
+}</code></pre><pre><code>class OrderService {
+    private final TaxPolicy taxPolicy;
+
+    OrderService(TaxPolicy taxPolicy) {
+        this.taxPolicy = taxPolicy;
+    }
+
+    double calculateTotal(Order order) {
+        return taxPolicy.apply(order.subtotal());
+    }
+}</code></pre></div><p class="notes">Good tests improve design, make refactoring safe, and reduce long-term maintenance cost.</p></section>
+
+    <section class="slide"><h2>The “Mary” Scenario <span>Why Your CI Is a Liability</span></h2><div class="timeline"><div><strong>1</strong><p>Senior engineer implements a 20-line feature.</p></div><div><strong>2</strong><p>CI returns 40 unrelated failures.</p></div><div><strong>3</strong><p>Failures are brittle tests reacting to harmless internal changes.</p></div></div><div class="code-grid"><pre><code>@Test
+void updateInternalState_ShouldCallPrivateMethod() {
+    // Testing implementation details
+}</code></pre><pre><code>@Test
+void deposit_ShouldIncreaseBalance_WhenAmountIsPositive() {
+    Account account = new Account(100);
+
+    account.deposit(50);
+
+    assertEquals(new Account(150), account);
+}</code></pre></div><p class="rule">Tests should fail only when behavior changes.</p></section>
+
+    <section class="slide"><h2>The Real Problem Is Not Tests</h2><div class="grid two"><article class="card danger"><h3>Wrong Mental Model</h3><ul><li>Tests slow us down.</li><li>Testing is overhead.</li><li>CI is the bottleneck.</li></ul></article><article class="card success"><h3>Better Mental Model</h3><ul><li>Good tests accelerate development.</li><li>Good tests protect refactoring.</li><li>Good tests document behavior.</li></ul></article></div><p class="rule">Tests are valuable only if they make development faster.</p></section>
+
+    <section class="slide"><h2>Meaningless Assertions <span>Signal vs Noise</span></h2><div class="code-grid"><pre><code>@Test
+void findOrder_ShouldReturnOrder() {
+    Order result = service.findOrder(123L);
+
+    assertNotNull(result);
+}</code></pre><pre><code>@Test
+void findOrder_ShouldReturnCorrectOrderDetails() {
+    Order expected = new Order(123L, "PENDING", 500);
+
+    Order actual = service.findOrder(123L);
+
+    assertEquals(expected, actual);
+}</code></pre></div><div class="grid two"><article class="card danger"><h3>Why it fails</h3><p>No verification of actual behavior. Poor failure diagnostics.</p></article><article class="card"><h3>Rule</h3><p>Assertions should explain failures clearly.</p></article></div></section>
+
+    <section class="slide"><h2>What Makes a Test Valuable?</h2><div class="metrics"><div><span>01</span><strong>Fast</strong><p>Runs in milliseconds.</p></div><div><span>02</span><strong>Deterministic</strong><p>Same result every time.</p></div><div><span>03</span><strong>Readable</strong><p>Explains behavior.</p></div><div><span>04</span><strong>High Signal</strong><p>Failures are useful.</p></div></div><div class="code-grid"><pre><code>@Test
+void processOrder() {
+    var result = service.process(order);
+
+    assertTrue(result != null);
+}</code></pre><pre><code>@Test
+void processOrder_ShouldApplyDiscount_WhenUserIsPremium() {
+    User user = new User(Status.PREMIUM);
+    Order order = new Order(100);
+
+    var result = service.process(user, order);
+
+    assertEquals(90.0, result.total());
+}</code></pre></div></section>
+
+    <section class="slide"><h2>AAA Pattern <span>Readability Through Structure</span></h2><div class="code-grid"><pre><code>@Test
+void testProcess() {
+    Service s = new Service();
+    s.init();
+    assertTrue(s.isValid());
+
+    var result = s.process(new Request(10));
+    assertEquals(20, result.val());
+}</code></pre><pre><code>@Test
+void process_ShouldDoubleValue_WhenInputIsPositive() {
+    // Arrange
+    var service = new Service();
+    var request = new Request(10);
+
+    // Act
+    var actual = service.process(request);
+
+    // Assert
+    assertEquals(new Response(20), actual);
+}</code></pre></div><p class="rule">Separate Arrange, Act, and Assert explicitly.</p></section>
+
+    <section class="slide"><h2>DAMP &gt; DRY <span>Clarity Over Duplication</span></h2><div class="code-grid"><pre><code>@Test
+void test1() {
+    helper(true, false, "Standard");
+}</code></pre><pre><code>@Test
+void shouldProcessOrder_WhenUserIsActive() {
+    User user = new User("John", Status.ACTIVE);
+    Order order = new Order(100);
+
+    var result = service.process(user, order);
+
+    assertEquals(Result.SUCCESS, result.status());
+}</code></pre></div><p class="rule">Prefer descriptive duplication over hidden abstractions.</p></section>
+
+    <section class="slide"><h2>The Minimalist Principle <span>Irrelevant Data</span></h2><div class="code-grid"><pre><code>@Test
+void updateEmail_ShouldWork() {
+    var user = new User(
+        1L, "John", "Doe",
+        "123 Main St", "555-1212",
+        "1980-01-01"
+    );
+
+    service.updateEmail(user, "new@email.com");
+
+    assertEquals("new@email.com", user.getEmail());
+}</code></pre><pre><code>@Test
+void updateEmail_ShouldUpdateUserField() {
+    var user = new User(1L);
+
+    service.updateEmail(user, "new@email.com");
+
+    assertEquals("new@email.com", user.getEmail());
+}</code></pre></div><p class="rule">Use the minimum data required to verify behavior.</p></section>
+
+    <section class="slide"><h2>Logic in Tests <span>The Hidden Bug Magnet</span></h2><div class="code-grid"><pre><code>@Test
+void calculateTax_ShouldBeCorrectForAllRegions() {
+    List&lt;String&gt; regions = List.of("NY", "CA", "TX");
+
+    for (String region : regions) {
+        var result = service.calculate(100, region);
+        assertTrue(result &gt; 0);
+    }
+}</code></pre><pre><code>@ParameterizedTest
+@ValueSource(strings = {"NY", "CA", "TX"})
+void calculateTax_ShouldReturnPositiveValue(String region) {
+    var result = service.calculate(100, region);
+
+    assertTrue(result &gt; 0);
+}</code></pre></div><p class="rule">Tests should be straight-line code.</p></section>
+
+    <section class="slide"><h2>Behavior-Oriented Naming</h2><div class="code-grid"><pre><code>@Test
+void testWithdraw() {
+}</code></pre><pre><code>@Test
+void shouldRejectWithdrawal_WhenBalanceIsInsufficient() {
+}</code></pre></div><div class="grid two"><article class="card danger"><h3>Bad names</h3><p>No business meaning. CI failures are cryptic.</p></article><article class="card success"><h3>Good names</h3><p>Turn the suite into living documentation.</p></article></div></section>
+
+    <section class="slide"><h2>The Bloated Setup Smell</h2><div class="code-grid"><pre><code>@BeforeEach
+void setUp() {
+    repo = mock(Repo.class);
+    email = mock(Email.class);
+    audit = mock(Audit.class);
+
+    service = new Service(repo, email, audit);
+
+    // 50 lines...
+}</code></pre><pre><code>@Test
+void updateName_ShouldSaveToRepo() {
+    var repo = mock(UserRepo.class);
+    var service = createServiceWithRepo(repo);
+
+    service.updateName(1L, "New Name");
+
+    verify(repo).save(any());
+}</code></pre></div><p class="rule">Prefer local setup over global setup.</p></section>
+
+    <section class="slide"><h2>State Over Interaction <span>What vs How</span></h2><div class="code-grid"><pre><code>@Test
+void saveUser_ShouldInteractWithDatabase() {
+    userService.save(user);
+
+    verify(mockDb).executeInsert(any());
+}</code></pre><pre><code>@Test
+void saveUser_ShouldMakeUserRetrievable() {
+    userService.save(user);
+
+    User actual = userService.findById(user.id());
+
+    assertEquals(user, actual);
+}</code></pre></div><p class="rule">Verify outcomes, not internal interactions.</p></section>
+
+    <section class="slide"><h2>Determinism and Seams</h2><div class="code-grid"><pre><code>@Test
+void getDiscount_ShouldApplyOnWeekends() {
+    if (LocalDateTime.now().getDayOfWeek()
+        == DayOfWeek.SATURDAY) {
+        assertEquals(80.0, service.calculate(100));
+    }
+}</code></pre><pre><code>@Test
+void calculatePrice_ShouldApplyWeekendDiscount() {
+    Clock fixedClock = Clock.fixed(
+        SATURDAY_INSTANT,
+        ZoneId.systemDefault()
+    );
+
+    var service = new PricingService(fixedClock);
+
+    assertEquals(80.0, service.calculate(100));
+}</code></pre></div><p class="rule">Wrap non-deterministic behavior behind injectable seams.</p></section>
+
+    <section class="slide"><h2>Mocks vs Stubs</h2><div class="grid two"><article class="card"><h3>Stub</h3><p>Provides data to the system under test.</p></article><article class="card"><h3>Mock</h3><p>Verifies behavior or interaction.</p></article></div><pre><code>// Stub
+User stubUser = mock(User.class);
+when(stubUser.id()).thenReturn(1L);
+
+// Mock
+EmailService mockEmail = mock(EmailService.class);
+service.notify(stubUser);
+verify(mockEmail).send(any());</code></pre><p class="rule">Stubs provide data; mocks verify behavior.</p></section>
+
+    <section class="slide"><h2>Over-Mocking <span>The False Confidence Trap</span></h2><div class="code-grid"><pre><code>@Test
+void processOrder_ShouldSucceed() {
+    User mockUser = mock(User.class);
+
+    when(mockUser.isActive()).thenReturn(true);
+
+    orderService.process(mockUser, order);
+}</code></pre><pre><code>@Test
+void processOrder_ShouldSucceed_ForActiveUser() {
+    User user = new User(
+        1L, "John", Status.ACTIVE
+    );
+
+    orderService.process(user, order);
+}</code></pre></div><p class="rule">Prefer real objects unless crossing expensive boundaries.</p></section>
+
+    <section class="slide"><h2>Spies and the <code>doReturn</code> Gotcha</h2><div class="code-grid"><pre><code>Service spy = spy(new Service());
+
+when(spy.expensiveCall())
+    .thenReturn(result);</code></pre><pre><code>Service spy = spy(new Service());
+
+doReturn(mockResult)
+    .when(spy)
+    .expensiveCall();</code></pre></div><p class="rule">Use doReturn with spies.</p></section>
+
+    <section class="slide"><h2>Spying on Overloads</h2><pre><code>@Test
+void getTotalPrice_ShouldDelegateDefaultQuantity() {
+    PriceService spy = spy(new PriceService());
+
+    spy.getTotalPrice();
+
+    verify(spy).getTotalPrice(1);
+}</code></pre><p class="rule">Test logic once; verify delegation separately.</p></section>
+
+    <section class="slide"><h2>ArgumentCaptor</h2><pre><code>@Captor
+ArgumentCaptor&lt;Request&gt; requestCaptor;
+
+@Test
+void submit_ShouldSendCorrectPayload() {
+    service.submit(data);
+
+    verify(apiClient)
+        .sendRequest(requestCaptor.capture());
+
+    Request captured = requestCaptor.getValue();
+
+    assertEquals("TX-123", captured.id());
+}</code></pre><p class="rule">Use ArgumentCaptor for deep payload validation.</p></section>
+
+    <section class="slide"><h2>Small Tests <span>The Google Standard</span></h2><div class="code-grid"><pre><code>@Test
+void processFile_ShouldUpdateDatabase() {
+    processor.process(new File("config.json"));
+}</code></pre><pre><code>@Test
+void processContent_ShouldGenerateValidResult() {
+    String input = "{ \"key\": \"value\" }";
+
+    var result = processor.process(input);
+
+    assertEquals(expected, result);
+}</code></pre></div><p class="rule">Unit tests should avoid I/O entirely.</p></section>
+
+    <section class="slide"><h2>The Coverage Trap</h2><div class="code-grid"><pre><code>@Test
+void testGettersAndSetters() {
+    User u = new User();
+
+    u.setName("John");
+
+    assertEquals("John", u.getName());
+}</code></pre><pre><code>@Test
+void calculateTax_ShouldApplyLuxuryRate() {
+    var result = taxService.calculate(15000);
+
+    assertEquals(3000.0, result);
+}</code></pre></div><p class="rule">Focus coverage on risk, not volume.</p></section>
+
+    <section class="slide"><h2>Turning Point <span>From Problems to Solutions</span></h2><div class="grid two"><article class="card danger"><h3>Current State</h3><ul><li>Too many mocks</li><li>Too many failures</li><li>Too much maintenance</li></ul></article><article class="card success"><h3>Better Direction</h3><ul><li>Behavior over implementation</li><li>Outcomes over interactions</li><li>Clarity over cleverness</li></ul></article></div><p class="rule">Good testing is about boundaries and intent.</p></section>
+
+    <section class="slide"><h2>Tests as Living Documentation</h2><pre><code>class TransferServiceTest {
+
+    @Test
+    void shouldRejectTransfer_WhenBalanceIsInsufficient() {
+    }
+
+    @Test
+    void shouldApplyFee_WhenTransferIsInternational() {
+    }
+}</code></pre><p class="rule">Tests should explain business behavior.</p></section>
+
+    <section class="slide"><h2>The Private Method Fallacy</h2><div class="code-grid"><pre><code>@Test
+void testInternalDataTransformation() {
+    service.internalTransform("data");
+}</code></pre><pre><code>@Test
+void processRequest_ShouldSanitizeAndSaveData() {
+    service.process("data");
+
+    var saved = repo.findByName("DATA");
+
+    assertEquals(new User("DATA"), saved);
+}</code></pre></div><p class="rule">Test through public APIs.</p></section>
+
+    <section class="slide"><h2>The InjectMocks Pitfall</h2><div class="code-grid"><pre><code>public class BaseTest {
+    public BaseTest() {
+        MockitoAnnotations.openMocks(this);
+    }
+}</code></pre><pre><code>@ExtendWith(MockitoExtension.class)
+class UserTest {
+
+    @Mock
+    UserRepo repo;
+
+    @InjectMocks
+    UserService service;
+}</code></pre></div><p class="rule">Use MockitoExtension, not constructors.</p></section>
+
+    <section class="slide"><h2>What “Bad” Looks Like</h2><div class="metrics"><div><span>CI</span><strong>Ignored</strong><p>Failures are normalized.</p></div><div><span>REF</span><strong>Fear</strong><p>Refactoring feels dangerous.</p></div><div><span>VEL</span><strong>Slow</strong><p>Feedback loop collapses.</p></div><div><span>TRUST</span><strong>Low</strong><p>Tests no longer matter.</p></div></div></section>
+
+    <section class="slide"><h2>What “Good” Looks Like</h2><div class="metrics"><div><span>01</span><strong>Fast CI</strong><p>Unit tests run quickly.</p></div><div><span>02</span><strong>Stable Tests</strong><p>Only behavior changes break tests.</p></div><div><span>03</span><strong>Clear Failures</strong><p>Failures guide debugging.</p></div><div><span>04</span><strong>Safe Refactoring</strong><p>Change becomes routine.</p></div></div><pre><code>@Test
+void transfer_ShouldReject_WhenBalanceIsInsufficient() {
+    var account = new Account(100);
+
+    var result = service.transfer(account, 200);
+
+    assertEquals(Result.REJECTED, result.status());
+}</code></pre></section>
+
+    <section class="slide final-slide"><h2>If You Remember Only This</h2><ol class="final-rules"><li>Test behavior, not implementation.</li><li>Assert state, not interactions.</li><li>Avoid logic in tests.</li><li>Prefer DAMP over DRY.</li><li>Use meaningful assertions.</li><li>Keep tests deterministic.</li><li>Test through public APIs.</li><li>Prefer readability over cleverness.</li><li>Tests should survive harmless refactors.</li></ol></section>
+  </main>
+  <aside class="progress"><div id="progressBar"></div></aside>
+  <script src="script.js"></script>
+</body>
+</html>
