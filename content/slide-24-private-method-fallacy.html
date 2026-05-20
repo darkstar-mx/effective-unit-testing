@@ -1,0 +1,11 @@
+<section class="slide"><h2>The Private Method Fallacy</h2><div class="code-grid"><pre><code>@Test
+void testInternalDataTransformation() {
+    service.internalTransform("data");
+}</code></pre><pre><code>@Test
+void processRequest_ShouldSanitizeAndSaveData() {
+    service.process("data");
+
+    var saved = repo.findByName("DATA");
+
+    assertEquals(new User("DATA"), saved);
+}</code></pre></div><p class="rule">Test through public APIs.</p></section>

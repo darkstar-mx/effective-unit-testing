@@ -1,0 +1,17 @@
+<section class="slide"><h2>Determinism and Seams</h2><div class="code-grid"><pre><code>@Test
+void getDiscount_ShouldApplyOnWeekends() {
+    if (LocalDateTime.now().getDayOfWeek()
+        == DayOfWeek.SATURDAY) {
+        assertEquals(80.0, service.calculate(100));
+    }
+}</code></pre><pre><code>@Test
+void calculatePrice_ShouldApplyWeekendDiscount() {
+    Clock fixedClock = Clock.fixed(
+        SATURDAY_INSTANT,
+        ZoneId.systemDefault()
+    );
+
+    var service = new PricingService(fixedClock);
+
+    assertEquals(80.0, service.calculate(100));
+}</code></pre></div><p class="rule">Wrap non-deterministic behavior behind injectable seams.</p></section>

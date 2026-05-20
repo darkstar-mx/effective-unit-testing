@@ -1,0 +1,12 @@
+<section class="slide"><h2>DAMP &gt; DRY <span>Clarity Over Duplication</span></h2><div class="code-grid"><pre><code>@Test
+void test1() {
+    helper(true, false, "Standard");
+}</code></pre><pre><code>@Test
+void shouldProcessOrder_WhenUserIsActive() {
+    User user = new User("John", Status.ACTIVE);
+    Order order = new Order(100);
+
+    var result = service.process(user, order);
+
+    assertEquals(Result.SUCCESS, result.status());
+}</code></pre></div><p class="rule">Prefer descriptive duplication over hidden abstractions.</p></section>

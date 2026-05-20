@@ -1,0 +1,8 @@
+<section class="slide"><h2>Spying on Overloads</h2><pre><code>@Test
+void getTotalPrice_ShouldDelegateDefaultQuantity() {
+    PriceService spy = spy(new PriceService());
+
+    spy.getTotalPrice();
+
+    verify(spy).getTotalPrice(1);
+}</code></pre><p class="rule">Test logic once; verify delegation separately.</p></section>

@@ -1,0 +1,11 @@
+<section class="slide"><h2>Small Tests <span>The Google Standard</span></h2><div class="code-grid"><pre><code>@Test
+void processFile_ShouldUpdateDatabase() {
+    processor.process(new File("config.json"));
+}</code></pre><pre><code>@Test
+void processContent_ShouldGenerateValidResult() {
+    String input = "{ \"key\": \"value\" }";
+
+    var result = processor.process(input);
+
+    assertEquals(expected, result);
+}</code></pre></div><p class="rule">Unit tests should avoid I/O entirely.</p></section>

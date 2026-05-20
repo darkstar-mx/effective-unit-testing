@@ -1,0 +1,8 @@
+<section class="slide"><h2>Spies and the <code>doReturn</code> Gotcha</h2><div class="code-grid"><pre><code>Service spy = spy(new Service());
+
+when(spy.expensiveCall())
+    .thenReturn(result);</code></pre><pre><code>Service spy = spy(new Service());
+
+doReturn(mockResult)
+    .when(spy)
+    .expensiveCall();</code></pre></div><p class="rule">Use doReturn with spies.</p></section>

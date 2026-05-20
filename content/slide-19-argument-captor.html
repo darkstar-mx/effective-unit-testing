@@ -1,0 +1,14 @@
+<section class="slide"><h2>ArgumentCaptor</h2><pre><code>@Captor
+ArgumentCaptor&lt;Request&gt; requestCaptor;
+
+@Test
+void submit_ShouldSendCorrectPayload() {
+    service.submit(data);
+
+    verify(apiClient)
+        .sendRequest(requestCaptor.capture());
+
+    Request captured = requestCaptor.getValue();
+
+    assertEquals("TX-123", captured.id());
+}</code></pre><p class="rule">Use ArgumentCaptor for deep payload validation.</p></section>

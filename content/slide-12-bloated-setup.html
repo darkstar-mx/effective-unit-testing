@@ -1,0 +1,18 @@
+<section class="slide"><h2>The Bloated Setup Smell</h2><div class="code-grid"><pre><code>@BeforeEach
+void setUp() {
+    repo = mock(Repo.class);
+    email = mock(Email.class);
+    audit = mock(Audit.class);
+
+    service = new Service(repo, email, audit);
+
+    // 50 lines...
+}</code></pre><pre><code>@Test
+void updateName_ShouldSaveToRepo() {
+    var repo = mock(UserRepo.class);
+    var service = createServiceWithRepo(repo);
+
+    service.updateName(1L, "New Name");
+
+    verify(repo).save(any());
+}</code></pre></div><p class="rule">Prefer local setup over global setup.</p></section>

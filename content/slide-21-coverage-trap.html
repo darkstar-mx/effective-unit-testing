@@ -1,0 +1,13 @@
+<section class="slide"><h2>The Coverage Trap</h2><div class="code-grid"><pre><code>@Test
+void testGettersAndSetters() {
+    User u = new User();
+
+    u.setName("John");
+
+    assertEquals("John", u.getName());
+}</code></pre><pre><code>@Test
+void calculateTax_ShouldApplyLuxuryRate() {
+    var result = taxService.calculate(15000);
+
+    assertEquals(3000.0, result);
+}</code></pre></div><p class="rule">Focus coverage on risk, not volume.</p></section>

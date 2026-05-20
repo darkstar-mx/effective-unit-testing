@@ -1,11 +1,49 @@
-const slides = [...document.querySelectorAll('.slide')];
+const deck = document.getElementById('deck');
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
 const counter = document.getElementById('counter');
 const progressBar = document.getElementById('progressBar');
+let slides = [];
 let current = 0;
 
+async function loadSlides() {
+    const manifestResponse = await fetch('content/slides.json');
+    if (!manifestResponse.ok) {
+        throw new Error(`Unable to load slide manifest: ${manifestResponse.status}`);
+    }
+
+    const slidePaths = await manifestResponse.json();
+    const slideMarkup = await Promise.all(slidePaths.map(async path => {
+        const response = await fetch(path);
+        if (!response.ok) {
+            throw new Error(`Unable to load slide file: ${path}`);
+        }
+
+        return response.text();
+    }));
+
+    deck.innerHTML = slideMarkup.join('\n');
+    slides = [...deck.querySelectorAll('.slide')];
+}
+
+function renderLoadError(message) {
+    deck.innerHTML = `
+        <section class="slide active">
+            <h2>Slides Failed to Load</h2>
+            <p class="rule">${message}</p>
+            <p class="notes">Serve this presentation over HTTP instead of opening <code>index.html</code> directly from the file system.</p>
+        </section>
+    `;
+    slides = [...deck.querySelectorAll('.slide')];
+    counter.textContent = '1 / 1';
+    progressBar.style.width = '100%';
+}
+
 function showSlide(index) {
+    if (!slides.length) {
+        return;
+    }
+
     current = Math.max(0, Math.min(index, slides.length - 1));
     slides.forEach((slide, i) => slide.classList.toggle('active', i === current));
     counter.textContent = `${current + 1} / ${slides.length}`;
@@ -27,7 +65,19 @@ window.addEventListener('keydown', event => {
     if (event.key === 'Home') showSlide(0);
     if (event.key === 'End') showSlide(slides.length - 1)
 });
-showSlide(0);
+
+async function initSlides() {
+    try {
+        await loadSlides();
+        showSlide(0);
+    } catch (error) {
+        console.error(error);
+        renderLoadError(error.message);
+    }
+}
+
+initSlides();
+
 const canvas = document.getElementById('tech-bg');
 const ctx = canvas.getContext('2d');
 let width, height, points;
